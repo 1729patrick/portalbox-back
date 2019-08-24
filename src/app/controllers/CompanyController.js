@@ -23,6 +23,7 @@ class SessionController {
       }),
       logo: Yup.string(),
       officeHours: Yup.string(),
+      domains: Yup.array(Yup.string()).required(),
       username: Yup.string().required(),
       password: Yup.string().required(),
     });
@@ -31,12 +32,20 @@ class SessionController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const checkCompanyExist = await Company.find({
+    const checkUsernameExist = await Company.findOne({
       username: req.body.username,
     });
 
-    if (checkCompanyExist.length) {
-      return res.status(400).json({ error: 'Company alread exists' });
+    if (checkUsernameExist) {
+      return res.status(400).json({ error: 'Username alread exists' });
+    }
+
+    const checkDomainExist = await Company.findOne({
+      domains: { $in: req.body.domains },
+    });
+
+    if (checkDomainExist) {
+      return res.status(400).json({ error: 'Domain alread exists' });
     }
 
     const {
@@ -45,10 +54,10 @@ class SessionController {
       phones,
       emails,
       address,
-      officialHours,
+      officeHours,
     } = await Company.create(req.body);
 
-    return res.json({ name, creci, phones, emails, address, officialHours });
+    return res.json({ name, creci, phones, emails, address, officeHours });
   }
 
   async index(req, res) {
@@ -58,9 +67,9 @@ class SessionController {
       return res.status(404).json({ error: 'Company not found' });
     }
 
-    const { name, creci, phones, emails, address, officialHours } = company;
+    const { name, creci, phones, emails, address, officeHours } = company;
 
-    return res.json({ name, creci, phones, emails, address, officialHours });
+    return res.json({ name, creci, phones, emails, address, officeHours });
   }
 }
 

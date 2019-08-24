@@ -14,9 +14,10 @@ const CompanySchema = new mongoose.Schema(
       {
         number: { type: String, required: true },
         isWhatsapp: { type: Boolean, default: false },
+        _id: false,
       },
     ],
-    emails: [{ type: String, lowercase: true }],
+    emails: [{ type: String, lowercase: true, _id: false }],
     address: {
       street: {
         type: String,
@@ -44,9 +45,15 @@ const CompanySchema = new mongoose.Schema(
     officeHours: {
       type: String,
     },
+    domains: {
+      type: [{ type: String, required: true, _id: false }],
+      validate: v => v.length,
+      unique: true,
+    },
     username: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,

@@ -38,10 +38,27 @@ class SessionController {
         emails,
         address,
         officeHours,
-        username,
       },
-      token: jwt.sign({ _id }, authConfig.secret, {
-        expiresIn: authConfig.expiresIn,
+      token: jwt.sign({ _id, audienceType: 'company' }, authConfig.secret, {
+        expiresIn: authConfig.expiresInCompany,
+      }),
+    });
+  }
+
+  async index(req, res) {
+    const { domain } = req.headers;
+
+    const company = await Company.findOne({ domains: domain });
+
+    if (!company) {
+      return res.status(404).json({ erro: 'Company not found' });
+    }
+    const { _id, name, creci, phones, emails, address, officeHours } = company;
+
+    return res.json({
+      company: { _id, name, creci, phones, emails, address, officeHours },
+      token: jwt.sign({ _id, audienceType: 'visitor' }, authConfig.secret, {
+        expiresIn: authConfig.expiresInVisitor,
       }),
     });
   }
