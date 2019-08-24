@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
-import authConfig from '../../config/auth';
 import { promisify } from 'util';
+
+import authConfig from '../../config/auth';
+import whiteRouters from '../../config/whiteRouters';
 
 export default async (req, res, next) => {
   const { authorization } = req.headers;
@@ -16,7 +18,14 @@ export default async (req, res, next) => {
       authConfig.secret
     );
 
-    if (audienceType !== 'company') {
+    const route = `${req.method}#${req._parsedUrl.pathname}`;
+
+    const whiteRouter = route.includes(whiteRouters);
+
+    if (
+      audienceType !== 'company' &&
+      (audienceType === 'visitor' && !whiteRouter)
+    ) {
       return res.status(403).json({ error: "You don't have permission" });
     }
 

@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
+import url from 'url';
 
 import authConfig from '../../config/auth';
 
@@ -46,12 +47,18 @@ class SessionController {
   }
 
   async index(req, res) {
-    const { domain } = req.headers;
+    const { origin } = req.headers;
 
-    const company = await Company.findOne({ domains: domain });
+    if (!origin) {
+      return res.status(401).json({ error: 'Invalid client' });
+    }
+
+    const { hostname } = new url.URL(origin);
+
+    const company = await Company.findOne({ domains: hostname });
 
     if (!company) {
-      return res.status(404).json({ erro: 'Company not found' });
+      return res.status(404).json({ error: 'Company not found' });
     }
     const { _id, name, creci, phones, emails, address, officeHours } = company;
 
