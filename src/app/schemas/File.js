@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const FileSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
     },
@@ -20,7 +20,7 @@ const FileSchema = new mongoose.Schema(
 
 FileSchema.virtual('url').get(function() {
   const url = process.env.URL || 'http://localhost:3333';
-  return `${url}/files/${encodeURIComponent(this.path)}`;
+  return `${url}/static/files/${encodeURIComponent(this.path)}`;
 });
 
 module.exports = mongoose.model('File', FileSchema);

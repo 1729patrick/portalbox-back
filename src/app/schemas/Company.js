@@ -39,11 +39,14 @@ const CompanySchema = new mongoose.Schema(
         required: true,
       },
     },
-    logo: {
-      type: String,
-    },
+    logo: { type: mongoose.Schema.ObjectId, ref: 'File', required: true },
+    banner: { type: mongoose.Schema.ObjectId, ref: 'File', required: true },
     officeHours: {
       type: String,
+    },
+    description: {
+      type: String,
+      required: true,
     },
     domains: {
       type: [{ type: String, required: true, _id: false }],

@@ -19,7 +19,10 @@ class SessionController {
 
     const { username, password } = req.body;
 
-    const company = await Company.findOne({ username });
+    const company = await Company.findOne({ username }).populate([
+      { path: 'logo', select: 'url path' },
+      { path: 'banner', select: 'url path' },
+    ]);
 
     if (!company) {
       return res.status(401).json({ error: 'Company not found' });
@@ -29,16 +32,31 @@ class SessionController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { _id, name, creci, phones, emails, address, officeHours } = company;
+    const {
+      _id,
+      name,
+      creci,
+      phones,
+      emails,
+      address,
+      officeHours,
+      description,
+      logo,
+      banner,
+    } = company;
 
     return res.json({
       company: {
+        _id,
         name,
         creci,
         phones,
         emails,
         address,
         officeHours,
+        description,
+        logo: logo.url,
+        banner: banner.url,
       },
       token: jwt.sign({ _id, audienceType: 'company' }, authConfig.secret, {
         expiresIn: authConfig.expiresInCompany,
@@ -55,15 +73,40 @@ class SessionController {
 
     const { hostname } = new url.URL(origin);
 
-    const company = await Company.findOne({ domains: hostname });
+    const company = await Company.findOne({ domains: hostname }).populate([
+      { path: 'logo', select: 'url path' },
+      { path: 'banner', select: 'url path' },
+    ]);
 
     if (!company) {
       return res.status(404).json({ error: 'Company not found' });
     }
-    const { _id, name, creci, phones, emails, address, officeHours } = company;
+    const {
+      _id,
+      name,
+      creci,
+      phones,
+      emails,
+      address,
+      officeHours,
+      description,
+      logo,
+      banner,
+    } = company;
 
     return res.json({
-      company: { _id, name, creci, phones, emails, address, officeHours },
+      company: {
+        _id,
+        name,
+        creci,
+        phones,
+        emails,
+        address,
+        officeHours,
+        description,
+        logo: logo.url,
+        banner: banner.url,
+      },
       token: jwt.sign({ _id, audienceType: 'visitor' }, authConfig.secret, {
         expiresIn: authConfig.expiresInVisitor,
       }),

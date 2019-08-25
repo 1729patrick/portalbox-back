@@ -43,11 +43,12 @@ class ImmobileController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const company = await Company.findById(req.companyId);
-
     // let immobile = [];
     // for (let i = 0; i < 5000; i++) {
-    const immobile = await Immobile.create({ ...req.body, company });
+    const immobile = await Immobile.create({
+      ...req.body,
+      company: req.companyId,
+    });
     // }
 
     const { _id, address, type, particulars, map, price, owner } = immobile;

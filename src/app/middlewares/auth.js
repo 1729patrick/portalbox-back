@@ -20,7 +20,7 @@ export default async (req, res, next) => {
 
     const route = `${req.method}#${req._parsedUrl.pathname}`;
 
-    const whiteRouter = route.includes(whiteRouters);
+    const whiteRouter = whiteRouters.find(wr => wr === route);
 
     if (
       audienceType !== 'company' &&
