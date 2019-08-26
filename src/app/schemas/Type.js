@@ -16,6 +16,13 @@ const TypeSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      transform: function(doc, obj) {
+        delete obj.__v;
+        obj.image = obj.image.url;
+        return obj;
+      },
+    },
   }
 );
 

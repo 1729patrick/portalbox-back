@@ -20,7 +20,7 @@ export default async (req, res, next) => {
 
     const route = `${req.method}#${req._parsedUrl.pathname}`;
 
-    const whiteRouter = whiteRouters.find(wr => wr === route);
+    const whiteRouter = whiteRouters.indexOf(route) !== -1;
 
     if (
       audienceType !== 'company' &&

@@ -4,8 +4,8 @@ class FileController {
   async store(req, res) {
     const { originalname: name, filename: path } = req.file;
 
-    const { url, id } = await File.create({ name, path });
-    return res.json({ url, id });
+    const { _id, url } = await File.create({ name, path });
+    return res.json({ _id, url });
   }
 }
 

@@ -6,13 +6,16 @@ const CitySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    neighborhoods: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Neighborhood',
-        required: true,
-      },
-    ],
+    neighborhoods: {
+      required: true,
+      type: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: 'Neighborhood',
+          required: true,
+        },
+      ],
+    },
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true },
   },
   {

@@ -1,66 +1,36 @@
-import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
 import url from 'url';
 
 import authConfig from '../../config/auth';
-
 import Company from '../schemas/Company';
 
 class SessionController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      username: Yup.string().required(),
-      password: Yup.string().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
-    }
-
     const { username, password } = req.body;
 
-    const company = await Company.findOne({ username }).populate([
-      { path: 'logo', select: 'url path' },
-      { path: 'banner', select: 'url path' },
-    ]);
+    const companyToCheck = await Company.findOne({ username })
+      .populate('logo banner')
+      .select('+password -createdAt -updatedAt');
 
-    if (!company) {
-      return res.status(401).json({ error: 'Company not found' });
+    if (!companyToCheck) {
+      return res.status(403).json({ error: 'Company not found' });
     }
 
-    if (!company.checkPassword(password)) {
-      return res.status(401).json({ error: 'Password does not match' });
+    if (!companyToCheck.checkPassword(password)) {
+      return res.status(403).json({ error: 'Password does not match' });
     }
 
-    const {
-      _id,
-      name,
-      creci,
-      phones,
-      emails,
-      address,
-      officeHours,
-      description,
-      logo,
-      banner,
-    } = company;
+    const company = companyToCheck.toJSON();
 
     return res.json({
-      company: {
-        _id,
-        name,
-        creci,
-        phones,
-        emails,
-        address,
-        officeHours,
-        description,
-        logo: logo.url,
-        banner: banner.url,
-      },
-      token: jwt.sign({ _id, audienceType: 'company' }, authConfig.secret, {
-        expiresIn: authConfig.expiresInCompany,
-      }),
+      company,
+      token: jwt.sign(
+        { _id: company._id, audienceType: 'company' },
+        authConfig.secret,
+        {
+          expiresIn: authConfig.expiresInCompany,
+        }
+      ),
     });
   }
 
@@ -68,48 +38,30 @@ class SessionController {
     const { origin } = req.headers;
 
     if (!origin) {
-      return res.status(401).json({ error: 'Invalid client' });
+      return res.status(400).json({ error: 'Invalid client' });
     }
 
     const { hostname } = new url.URL(origin);
 
-    const company = await Company.findOne({ domains: hostname }).populate([
-      { path: 'logo', select: 'url path' },
-      { path: 'banner', select: 'url path' },
-    ]);
+    const companyToCheck = await Company.findOne({ domains: hostname })
+      .populate('logo banner')
+      .select('-createdAt -updatedAt');
 
-    if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+    if (!companyToCheck) {
+      return res.status(403).json({ error: 'Company not found' });
     }
-    const {
-      _id,
-      name,
-      creci,
-      phones,
-      emails,
-      address,
-      officeHours,
-      description,
-      logo,
-      banner,
-    } = company;
+
+    const company = companyToCheck.toJSON();
 
     return res.json({
-      company: {
-        _id,
-        name,
-        creci,
-        phones,
-        emails,
-        address,
-        officeHours,
-        description,
-        logo: logo.url,
-        banner: banner.url,
-      },
-      token: jwt.sign({ _id, audienceType: 'visitor' }, authConfig.secret, {
-        expiresIn: authConfig.expiresInVisitor,
-      }),
+      company,
+      token: jwt.sign(
+        { _id: company._id, audienceType: 'visitor' },
+        authConfig.secret,
+        {
+          expiresIn: authConfig.expiresInVisitor,
+        }
+      ),
     });
   }
 }

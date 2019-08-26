@@ -9,25 +9,31 @@ import FileController from './app/controllers/FileController';
 import TypeController from './app/controllers/TypeController';
 import CityController from './app/controllers/CityController';
 
+import validateCityStore from './app/validators/CityStore';
+import validateCompanyStore from './app/validators/CompanyStore';
+import validateImmobileStore from './app/validators/ImmobileStore';
+import validateSessionStore from './app/validators/SessionStore';
+import validateTypeStore from './app/validators/TypeStore';
+
 import multerConfig from './config/multer';
 
 const router = new Router();
 const upload = multer(multerConfig);
 
-router.post('/sessions', SessionController.store);
+router.post('/sessions', validateSessionStore, SessionController.store);
 router.get('/sessions', SessionController.index);
 
 router.use(authMiddleware);
 
-router.post('/companies', CompanyController.store);
+router.post('/companies', validateCompanyStore, CompanyController.store);
 
-router.post('/immobiles', ImmobileController.store);
+router.post('/immobiles', validateImmobileStore, ImmobileController.store);
 router.get('/immobiles', ImmobileController.index);
 
-router.post('/types', TypeController.store);
+router.post('/types', validateTypeStore, TypeController.store);
 router.get('/types', TypeController.index);
 
-router.post('/cities', CityController.store);
+router.post('/cities', validateCityStore, CityController.store);
 router.get('/cities', CityController.index);
 
 router.post('/files', upload.single('file'), FileController.store);

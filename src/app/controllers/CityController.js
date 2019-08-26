@@ -1,24 +1,17 @@
 import City from '../schemas/City';
-import Neighborhood from '../schemas/Neighborhood';
 
+import CreateCityService from '../services/CreateCityService';
 class CityController {
   async store(req, res) {
-    let { name, neighborhoods } = req.body;
+    const { name, neighborhoods } = req.body;
 
-    const city = await City.create({
+    const city = await CreateCityService.run({
       name,
-      company: req.companyId,
+      neighborhoods,
+      companyId: req.companyId,
     });
 
-    city.neighborhoods = await Promise.all(
-      neighborhoods.map(name => Neighborhood.create({ name }))
-    );
-
-    await city.save();
-
-    neighborhoods = city.neighborhoods.map(({ _id, name }) => ({ _id, name }));
-
-    return res.json({ name, neighborhoods });
+    return res.json(city);
   }
 
   async index(req, res) {
