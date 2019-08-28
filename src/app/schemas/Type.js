@@ -19,7 +19,7 @@ const TypeSchema = new mongoose.Schema(
     toJSON: {
       transform: function(doc, obj) {
         delete obj.__v;
-        obj.image = obj.image.url;
+        if (obj.image) obj.image = obj.image.url;
         return obj;
       },
     },

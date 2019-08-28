@@ -36,6 +36,6 @@ router.get('/types', TypeController.index);
 router.post('/cities', validateCityStore, CityController.store);
 router.get('/cities', CityController.index);
 
-router.post('/files', upload.single('file'), FileController.store);
+router.post('/files', upload.array('files'), FileController.store);
 
 export default router;

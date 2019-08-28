@@ -5,7 +5,7 @@ export default async (req, res, next) => {
     const schema = Yup.object().shape({
       address: Yup.object().shape({
         street: Yup.string().required(),
-        number: Yup.number(),
+        number: Yup.number().nullable(),
         neighborhood: Yup.string().required(),
         city: Yup.string().required(),
       }),
@@ -16,23 +16,34 @@ export default async (req, res, next) => {
           value: Yup.string().required(),
           icon: Yup.string(),
         })
-      ),
-      map: Yup.object().shape({
-        lat: Yup.number().required(),
-        lng: Yup.number().required(),
-      }),
-      price: Yup.object()
+      ).required(),
+      map: Yup.object()
         .shape({
-          sale: Yup.number(),
-          rent: Yup.number(),
+          lat: Yup.number().nullable(),
+          lng: Yup.number().nullable(),
         })
         .required(),
-      images: Yup.array(),
+      price: Yup.object()
+        .shape({
+          sale: Yup.number().nullable(),
+          rent: Yup.number().nullable(),
+        })
+        .required(),
+      images: Yup.array(
+        Yup.object().shape({
+          file: Yup.string().required(),
+          url: Yup.string().required(),
+          description: Yup.string().required(),
+        })
+      ).required(),
       owner: Yup.object().shape({
         name: Yup.string(),
         whatsapp: Yup.string(),
         cpf: Yup.string(),
         annotation: Yup.string(),
+      }),
+      config: Yup.object().shape({
+        sessions: Yup.array(Yup.number()),
       }),
     });
 

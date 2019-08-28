@@ -9,11 +9,13 @@ const ImmobileSchema = new mongoose.Schema(
       },
       number: Number,
       neighborhood: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: 'Neighborhood',
         required: true,
       },
       city: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: 'City',
         required: true,
       },
     },
@@ -33,30 +35,48 @@ const ImmobileSchema = new mongoose.Schema(
       },
     ],
     map: {
-      lat: {
-        type: Number,
-        required: true,
-      },
-      lng: {
-        type: Number,
-        required: true,
-      },
+      lat: Number,
+      lng: Number,
     },
     price: {
       sale: Number,
       rent: Number,
     },
-    images: [{ type: mongoose.Schema.ObjectId, ref: 'File' }],
+    images: [
+      {
+        file: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'File',
+          required: true,
+        },
+        description: String,
+      },
+    ],
     owner: {
       name: String,
       whatsapp: String,
       cpf: String,
       annotation: String,
     },
+    config: {
+      sessions: [Number],
+    },
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true },
   },
   {
     timestamps: true,
+    toJSON: {
+      transform: function(doc, obj) {
+        if (obj.images)
+          obj.images = obj.images.map(({ _id, file, description }) => ({
+            _id,
+            file: file.url,
+            description,
+          }));
+
+        return obj;
+      },
+    },
   }
 );
 
