@@ -5,6 +5,7 @@ import authMiddleware from './app/middlewares/auth';
 import SessionController from './app/controllers/SessionController';
 import CompanyController from './app/controllers/CompanyController';
 import ImmobileController from './app/controllers/ImmobileController';
+import ImmobileDetailsController from './app/controllers/ImmobileDetailsController';
 import FileController from './app/controllers/FileController';
 import TypeController from './app/controllers/TypeController';
 import CityController from './app/controllers/CityController';
@@ -29,6 +30,7 @@ router.post('/companies', validateCompanyStore, CompanyController.store);
 
 router.post('/immobiles', validateImmobileStore, ImmobileController.store);
 router.get('/immobiles', ImmobileController.index);
+router.get('/immobiles/:_id/details', ImmobileDetailsController.index);
 
 router.post('/types', validateTypeStore, TypeController.store);
 router.get('/types', TypeController.index);
