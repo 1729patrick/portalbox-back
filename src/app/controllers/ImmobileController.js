@@ -49,6 +49,8 @@ class ImmobileController {
       page,
       sessions,
       companyId: req.companyId,
+      particularLenght: 4,
+      imagesLengh: 1,
     });
 
     return res.json({ count, immobiles });

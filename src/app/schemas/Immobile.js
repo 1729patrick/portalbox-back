@@ -27,7 +27,7 @@ const ImmobileSchema = new mongoose.Schema(
           required: true,
         },
         value: {
-          type: String,
+          type: mongoose.Schema.Types.Mixed,
           required: true,
         },
         icon: String,

@@ -1,7 +1,7 @@
 import Immobile from '../schemas/Immobile';
 
 class FindImmobilesService {
-  async run({ sessions, companyId, _id }) {
+  async run({ sessions, companyId, _id, particularLenght, imagesLengh }) {
     try {
       const sessionsFind = sessions
         ? { 'config.sessions': { $in: JSON.parse(sessions) } }
@@ -9,8 +9,8 @@ class FindImmobilesService {
 
       const _idFind = _id ? { _id } : {};
 
-      const findImmobile = () =>
-        Immobile.find(
+      const findImmobile = (skip, limit) => {
+        const find = Immobile.find(
           {
             company: companyId,
             ...sessionsFind,
@@ -27,24 +27,32 @@ class FindImmobilesService {
           ]
         );
 
+        if (particularLenght) find.slice('particulars', particularLenght);
+
+        if (imagesLengh) find.slice('images', imagesLengh);
+
+        if (limit) find.skip(skip).limit(limit);
+
+        return find;
+      };
+
       const count = await findImmobile().count();
 
       let skip = Math.random() * count;
-      skip = skip >= 8 ? skip - 8 : 0;
+      const limit = 8;
 
-      const immobiles = await findImmobile()
-        .populate([
-          { path: 'address.city', model: 'City', select: 'name' },
-          {
-            path: 'address.neighborhood',
-            model: 'Neighborhood',
-            select: 'name',
-          },
-          { path: 'type', model: 'Type', select: 'name' },
-          { path: 'images.file', model: 'File', select: 'url path' },
-        ])
-        .skip(skip)
-        .limit(8);
+      skip = count - skip >= limit ? skip : 0;
+
+      const immobiles = await findImmobile(skip, limit).populate([
+        { path: 'address.city', model: 'City', select: 'name' },
+        {
+          path: 'address.neighborhood',
+          model: 'Neighborhood',
+          select: 'name',
+        },
+        { path: 'type', model: 'Type', select: 'name' },
+        { path: 'images.file', model: 'File', select: 'url path' },
+      ]);
 
       return { immobiles, count };
     } catch (e) {
