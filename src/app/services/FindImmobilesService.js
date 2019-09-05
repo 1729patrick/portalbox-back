@@ -24,6 +24,7 @@ class FindImmobilesService {
             'type',
             'particulars',
             'config.sessions',
+            'rates',
           ]
         );
 

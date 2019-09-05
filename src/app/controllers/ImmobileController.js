@@ -12,6 +12,7 @@ class ImmobileController {
       owner,
       images,
       config,
+      rates,
     } = req.body;
 
     // for (let i = 0; i < 10000; i++) {
@@ -25,6 +26,7 @@ class ImmobileController {
       images,
       config,
       company: req.companyId,
+      rates,
     });
     // }
     const { _id } = immobile;
@@ -39,6 +41,7 @@ class ImmobileController {
       owner,
       config,
       images,
+      rates,
     });
   }
 
@@ -49,7 +52,7 @@ class ImmobileController {
       page,
       sessions,
       companyId: req.companyId,
-      particularLenght: 4,
+      particularLenght: 3,
       imagesLengh: 1,
     });
 

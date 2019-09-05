@@ -30,7 +30,6 @@ const ImmobileSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.Mixed,
           required: true,
         },
-        icon: String,
         _id: false,
       },
     ],
@@ -61,6 +60,19 @@ const ImmobileSchema = new mongoose.Schema(
     config: {
       sessions: [Number],
     },
+    rates: [
+      {
+        title: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: mongoose.Schema.Types.Mixed,
+          required: true,
+        },
+        _id: false,
+      },
+    ],
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true },
   },
   {
