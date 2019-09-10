@@ -10,12 +10,12 @@
   },
   "headerFilter": {
     "option": {
-      "borderColor": "#fff",
+      "borderColor": "#eee",
       "color": "#fff",
-      "backgroundColor": "#fff",
+      "backgroundColor": "#eee",
       "selected": {
         "color": "#333",
-        "backgroundColor": "#fff"
+        "backgroundColor": "#eee"
       }
     },
     "popup": {
@@ -26,6 +26,11 @@
     "price": {
       "range": {
         "backgroundColor": "#162962"
+      }
+    },
+    "neighborhood": {
+      "city": {
+        "color": "#162962"
       }
     }
   },

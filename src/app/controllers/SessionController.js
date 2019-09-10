@@ -6,7 +6,7 @@ import Company from '../schemas/Company';
 
 class SessionController {
   async store(req, res) {
-     const { username, password } = req.body;
+    const { username, password } = req.body;
 
     const companyToCheck = await Company.findOne({ username })
       .populate('logo banner')

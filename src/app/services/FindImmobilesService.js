@@ -1,19 +1,45 @@
 import Immobile from '../schemas/Immobile';
 
 class FindImmobilesService {
-  async run({ sessions, companyId, _id, particularLenght, imagesLengh }) {
+  async run({
+    sessions,
+    companyId,
+    _id,
+    particularLenght,
+    imagesLengh,
+    finality,
+    types,
+    neighborhoods,
+  }) {
     try {
+      const _idFind = _id ? { _id } : {};
+
       const sessionsFind = sessions
         ? { 'config.sessions': { $in: JSON.parse(sessions) } }
         : {};
 
-      const _idFind = _id ? { _id } : {};
+      const finalityFind =
+        finality === 'rent'
+          ? { 'price.rent': { $ne: null } }
+          : finality === 'sale'
+          ? { 'price.sale': { $ne: null } }
+          : '';
+
+      const typeFind = types ? { type: { $in: JSON.parse(types) } } : {};
+      const neighborhoodFind = neighborhoods
+        ? {
+            'address.neighborhood': { $in: JSON.parse(neighborhoods) },
+          }
+        : {};
 
       const findImmobile = (skip, limit) => {
         const find = Immobile.find(
           {
             company: companyId,
             ...sessionsFind,
+            ...finalityFind,
+            ...typeFind,
+            ...neighborhoodFind,
             ..._idFind,
           },
           [

@@ -19,7 +19,7 @@ const ImmobileSchema = new mongoose.Schema(
         required: true,
       },
     },
-    type: { type: String, required: true },
+    type: { type: mongoose.Schema.ObjectId, ref: 'Type', required: true },
     particulars: [
       {
         title: {
