@@ -46,7 +46,7 @@ class ImmobileController {
   }
 
   async index(req, res) {
-    const { page, sessions, finality, types, neighborhoods } = req.query;
+    const { page, sessions, finality, types, neighborhoods, limit } = req.query;
 
     const { count, immobiles } = await FindImmobilesService.run({
       page,
@@ -57,6 +57,7 @@ class ImmobileController {
       finality,
       types,
       neighborhoods,
+      limit: Number(limit),
     });
 
     return res.json({ count, immobiles });

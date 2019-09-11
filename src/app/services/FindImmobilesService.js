@@ -10,6 +10,7 @@ class FindImmobilesService {
     finality,
     types,
     neighborhoods,
+    limit,
   }) {
     try {
       const _idFind = _id ? { _id } : {};
@@ -66,7 +67,6 @@ class FindImmobilesService {
       const count = await findImmobile().count();
 
       let skip = Math.random() * count;
-      const limit = 8;
 
       skip = count - skip >= limit ? skip : 0;
 
