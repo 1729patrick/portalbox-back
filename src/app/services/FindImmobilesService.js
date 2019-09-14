@@ -11,6 +11,8 @@ class FindImmobilesService {
     types,
     neighborhoods,
     limit,
+    priceMin = 0,
+    priceMax = 999999999,
   }) {
     try {
       const _idFind = _id ? { _id } : {};
@@ -19,28 +21,41 @@ class FindImmobilesService {
         ? { 'config.sessions': { $in: JSON.parse(sessions) } }
         : {};
 
-      const finalityFind =
-        finality === 'rent'
-          ? { 'price.rent': { $ne: null } }
-          : finality === 'sale'
-          ? { 'price.sale': { $ne: null } }
-          : '';
-
       const typeFind = types ? { type: { $in: JSON.parse(types) } } : {};
+
       const neighborhoodFind = neighborhoods
         ? {
             'address.neighborhood': { $in: JSON.parse(neighborhoods) },
           }
         : {};
 
+      const priceRentFind =
+        priceMin >= 0 && priceMax >= 0
+          ? { 'price.rent': { $gte: Number(priceMin), $lte: Number(priceMax) } }
+          : {};
+
+      const priceSaleFind =
+        priceMin >= 0 && priceMax >= 0
+          ? { 'price.sale': { $gte: Number(priceMin), $lte: Number(priceMax) } }
+          : {};
+
+      const finalityFind =
+        finality === 'rent'
+          ? priceRentFind
+          : finality === 'sale'
+          ? priceSaleFind
+          : null;
+
+      const noFinalityFind = { $or: [priceRentFind, priceSaleFind] };
+
       const findImmobile = (skip, limit) => {
         const find = Immobile.find(
           {
             company: companyId,
             ...sessionsFind,
-            ...finalityFind,
             ...typeFind,
             ...neighborhoodFind,
+            ...(finalityFind || noFinalityFind),
             ..._idFind,
           },
           [
