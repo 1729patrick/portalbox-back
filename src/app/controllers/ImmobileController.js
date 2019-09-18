@@ -55,7 +55,10 @@ class ImmobileController {
       limit,
       priceMin,
       priceMax,
+      particulars,
     } = req.query;
+
+    const particularsFormatted = particulars ? JSON.parse(particulars) : null;
 
     const { count, immobiles } = await FindImmobilesService.run({
       page,
@@ -69,6 +72,7 @@ class ImmobileController {
       limit: Number(limit),
       priceMin,
       priceMax,
+      particulars: particularsFormatted,
     });
 
     return res.json({ count, immobiles });

@@ -4,7 +4,7 @@ const TypeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true, 
     },
     image: { type: mongoose.Schema.ObjectId, ref: 'File', required: true },
     active: {
