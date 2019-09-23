@@ -19,7 +19,7 @@ const FileSchema = new mongoose.Schema(
 );
 
 FileSchema.virtual('url').get(function() {
-  const url = process.env.URL || 'http://192.168.53.102:3333';
+  const url = process.env.URL || 'http://localhost:3333';
   return `${url}/static/files/${encodeURIComponent(this.path)}`;
 });
 

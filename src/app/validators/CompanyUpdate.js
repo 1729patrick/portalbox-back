@@ -33,15 +33,15 @@ export default async (req, res, next) => {
         .shape({
           street: Yup.string().required(),
           number: Yup.number(),
-          neighborhood: Yup.string(), // required for update
-          city: Yup.string(), // required for update
+          neighborhood: Yup.string().required(), // required for update
+          city: Yup.string().required(), // required for update
           cep: Yup.string().required(),
           lat: Yup.number(),
           lng: Yup.number(),
         })
         .required(),
-      logo: Yup.string(), // required for update
-      banner: Yup.string(), // required for update
+      logo: Yup.string().required(), // required for update
+      banner: Yup.string().required(), // required for update
       officeHours: Yup.string(),
       description: Yup.string().required(),
       domains: Yup.array(Yup.string()).required(),

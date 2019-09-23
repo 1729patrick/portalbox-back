@@ -12,6 +12,7 @@ import CityController from './app/controllers/CityController';
 
 import validateCityStore from './app/validators/CityStore';
 import validateCompanyStore from './app/validators/CompanyStore';
+import validateCompanyUpdate from './app/validators/CompanyUpdate';
 import validateImmobileStore from './app/validators/ImmobileStore';
 import validateSessionStore from './app/validators/SessionStore';
 import validateTypeStore from './app/validators/TypeStore';
@@ -27,6 +28,7 @@ router.get('/sessions', SessionController.index);
 router.use(authMiddleware);
 
 router.post('/companies', validateCompanyStore, CompanyController.store);
+router.put('/companies', validateCompanyUpdate, CompanyController.update);
 
 router.post('/immobiles', validateImmobileStore, ImmobileController.store);
 router.get('/immobiles', ImmobileController.index);

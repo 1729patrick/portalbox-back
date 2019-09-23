@@ -16,7 +16,7 @@ export default async (req, res, next) => {
           value: Yup.string().required(),
           icon: Yup.string(),
         })
-      ).required(),
+      ),
       map: Yup.object()
         .shape({
           lat: Yup.number().nullable(),

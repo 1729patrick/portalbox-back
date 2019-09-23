@@ -9,7 +9,7 @@ class SessionController {
     const { username, password } = req.body;
 
     const companyToCheck = await Company.findOne({ username })
-      .populate('logo banner')
+      .populate('logo banner address.city address.neighborhood')
       .select('+password -createdAt -updatedAt');
 
     if (!companyToCheck) {
@@ -44,7 +44,7 @@ class SessionController {
     const { hostname } = new url.URL(origin);
 
     const companyToCheck = await Company.findOne({ domains: hostname })
-      .populate('logo banner')
+      .populate('logo banner address.city address.neighborhood')
       .select('-createdAt -updatedAt');
 
     if (!companyToCheck) {

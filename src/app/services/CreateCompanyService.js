@@ -1,7 +1,6 @@
 import Company from '../schemas/Company';
-import File from '../schemas/File';
 
-class FindCompanyService {
+class CreateCompanyService {
   async run({ company }) {
     const checkUsernameExist = await Company.findOne({
       username: company.username,
@@ -18,23 +17,12 @@ class FindCompanyService {
     if (checkDomainExist) {
       throw new Error('Domain alread exists');
     }
-
-    try {
-      await File.count({ _id: company.banner });
-    } catch (err) {
-      throw new Error('Banner not found');
-    }
-
-    try {
-      await File.count({ _id: company.logo });
-    } catch (err) {
-      throw new Error('Logo not found');
-    }
-
     const newCompany = await Company.create(company);
 
-    return newCompany.populate('logo banner').execPopulate();
+    return newCompany
+      .populate('logo banner address.city address.neighborhood')
+      .execPopulate();
   }
 }
 
-export default new FindCompanyService();
+export default new CreateCompanyService();

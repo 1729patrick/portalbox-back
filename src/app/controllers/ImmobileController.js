@@ -15,6 +15,8 @@ class ImmobileController {
       rates,
     } = req.body;
 
+    // return res.json(req.body);
+
     // for (let i = 0; i < 10000; i++) {
     const immobile = await Immobile.create({
       address,
