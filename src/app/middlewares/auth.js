@@ -15,10 +15,6 @@ export default async (req, res, next) => {
 
   const [_, token] = authorization.split(' ');
 
-  if (token === 'patrick') {
-    return next();
-  }
-
   try {
     const { _id, audienceType } = await promisify(jwt.verify)(
       token,
@@ -27,11 +23,13 @@ export default async (req, res, next) => {
 
     const route = `${req.method}#${req._parsedUrl.pathname}`;
 
+    console.log('aa', req._parsedUrl.pathname);
     const whiteRouter = whiteRouters.indexOf(route) !== -1;
 
     if (
       audienceType !== 'company' &&
-      (audienceType === 'visitor' && !whiteRouter)
+      audienceType === 'visitor' &&
+      !whiteRouter
     ) {
       return res.status(403).json({ error: "You don't have permission" });
     }

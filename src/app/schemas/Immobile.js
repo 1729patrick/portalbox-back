@@ -82,7 +82,7 @@ const ImmobileSchema = new mongoose.Schema(
         if (obj.images)
           obj.images = obj.images.map(({ _id, file, description }) => ({
             _id,
-            file: file.url,
+            file: file ? file.url : null,
             description,
           }));
 
