@@ -43,6 +43,8 @@ class SessionController {
 
     const { hostname } = new url.URL(origin);
 
+    console.log(hostname);
+
     const companyToCheck = await Company.findOne({ domains: hostname })
       .populate('logo banner address.city address.neighborhood')
       .select('-createdAt -updatedAt');
