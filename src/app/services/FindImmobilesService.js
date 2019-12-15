@@ -3,7 +3,7 @@ import Immobile from '../schemas/Immobile';
 class FindImmobilesService {
   async run({ limit, ...restParams }) {
     try {
-      const count = await this.findImmobile(restParams).count();
+      const count = await this.findImmobile(restParams).countDocuments();
 
       let skip = Math.random() * count;
 

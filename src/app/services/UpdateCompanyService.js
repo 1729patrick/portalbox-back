@@ -7,7 +7,7 @@ import File from '../schemas/File';
 class UpdateCompanyService {
   async run({ _id, company }) {
     try {
-      const neighborhood = await Neighborhood.count({
+      const neighborhood = await Neighborhood.countDocuments({
         _id: company.address.neighborhood,
       });
 
@@ -19,7 +19,7 @@ class UpdateCompanyService {
     }
 
     try {
-      const city = await City.count({ _id: company.address.city });
+      const city = await City.countDocuments({ _id: company.address.city });
 
       if (!city) {
         throw new Error();
@@ -29,7 +29,7 @@ class UpdateCompanyService {
     }
 
     try {
-      const banner = await File.count({ _id: company.banner });
+      const banner = await File.countDocuments({ _id: company.banner });
 
       if (!banner) {
         throw new Error();
@@ -39,7 +39,7 @@ class UpdateCompanyService {
     }
 
     try {
-      const logo = await File.count({ _id: company.logo });
+      const logo = await File.countDocuments({ _id: company.logo });
 
       if (!logo) {
         throw new Error();

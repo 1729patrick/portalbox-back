@@ -17,8 +17,6 @@ import validateImmobileStore from './app/validators/ImmobileStore';
 import validateSessionStore from './app/validators/SessionStore';
 import validateTypeStore from './app/validators/TypeStore';
 
-import checkRoute from './app/validators/ImmobileDetailsRoute';
-
 import multerConfig from './config/multer';
 
 const router = new Router();
@@ -33,18 +31,15 @@ router.post('/companies', validateCompanyStore, CompanyController.store);
 router.put('/companies', validateCompanyUpdate, CompanyController.update);
 
 router.post('/immobiles', validateImmobileStore, ImmobileController.store);
-router.get('/immobiles', ImmobileController.index);
-router.get(
-  '/immobiles/:_id/details',
-  checkRoute,
-  ImmobileDetailsController.index
-);
+router.get('/public/immobiles', ImmobileController.index);
+
+router.get('/public/immobiles/:_id/details', ImmobileDetailsController.index);
 
 router.post('/types', validateTypeStore, TypeController.store);
-router.get('/types', TypeController.index);
+router.get('/public/types', TypeController.index);
 
 router.post('/cities', validateCityStore, CityController.store);
-router.get('/cities', CityController.index);
+router.get('/public/cities', CityController.index);
 
 router.post('/files', upload.array('files'), FileController.store);
 
