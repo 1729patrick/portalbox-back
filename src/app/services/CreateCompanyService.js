@@ -17,6 +17,7 @@ class CreateCompanyService {
     if (checkDomainExist) {
       throw new Error('Domain alread exists');
     }
+    
     const newCompany = await Company.create(company);
 
     return newCompany

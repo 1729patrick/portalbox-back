@@ -113,6 +113,15 @@ CompanySchema.pre('save', function(next) {
   next();
 });
 
+CompanySchema.pre('findOneAndUpdate', function(next) {
+  const company = this.getUpdate();
+  company.password = bcrypt.hashSync(company.password, 8);
+
+  this.update({}, company).exec();
+
+  next();
+});
+
 CompanySchema.methods.checkPassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
