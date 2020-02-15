@@ -58,15 +58,13 @@ class FindImmobilesService {
         }
       : {};
 
-    const priceRentFind =
-      priceMin >= 0 && priceMax >= 0
-        ? { 'price.rent': { $gte: Number(priceMin), $lte: Number(priceMax) } }
-        : {};
+    const priceRentFind = {
+      'price.rent': { $gte: Number(priceMin), $lte: Number(priceMax) },
+    };
 
-    const priceSaleFind =
-      priceMin >= 0 && priceMax >= 0
-        ? { 'price.sale': { $gte: Number(priceMin), $lte: Number(priceMax) } }
-        : {};
+    const priceSaleFind = {
+      'price.sale': { $gte: Number(priceMin), $lte: Number(priceMax) },
+    };
 
     const finalityFind =
       finality === 'rent'

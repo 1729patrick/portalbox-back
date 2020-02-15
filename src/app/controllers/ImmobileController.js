@@ -3,22 +3,16 @@ import Immobile from '../schemas/Immobile';
 import FindImmobilesService from '../services/FindImmobilesService';
 class ImmobileController {
   async store(req, res) {
-    const {
-      address,
-      type,
-      particulars,
-      map,
-      price,
-      owner,
-      images,
-      config,
-      rates,
-    } = req.body;
-
     // return res.json(req.body);
 
     // for (let i = 0; i < 10000; i++) {
     const immobile = await Immobile.create({
+      ...req.body,
+      company: req.companyId,
+    });
+    // }
+    const {
+      _id,
       address,
       type,
       particulars,
@@ -27,11 +21,8 @@ class ImmobileController {
       owner,
       images,
       config,
-      company: req.companyId,
       rates,
-    });
-    // }
-    const { _id } = immobile;
+    } = immobile;
 
     return res.json({
       _id,
@@ -41,8 +32,8 @@ class ImmobileController {
       map,
       price,
       owner,
-      config,
       images,
+      config,
       rates,
     });
   }

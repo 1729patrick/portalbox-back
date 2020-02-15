@@ -53,7 +53,7 @@ const ImmobileSchema = new mongoose.Schema(
     ],
     owner: {
       name: String,
-      whatsapp: String,
+      whatsapp: Number,
       cpf: String,
       annotation: String,
     },
@@ -67,7 +67,7 @@ const ImmobileSchema = new mongoose.Schema(
           required: true,
         },
         value: {
-          type: mongoose.Schema.Types.Mixed,
+          type: Number,
           required: true,
         },
         _id: false,
