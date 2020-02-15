@@ -3,3 +3,4 @@ yarn.lock
 tmp/uploads/*
 !*.gitkeep
 .env
+dist
