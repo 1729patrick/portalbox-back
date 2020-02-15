@@ -44,9 +44,9 @@ export default async (req, res, next) => {
       banner: Yup.string().required(), // required for update
       officeHours: Yup.string(),
       description: Yup.string().required(),
-      domains: Yup.array(Yup.string()).required(),
-      username: Yup.string().required(),
       password: Yup.string().required(),
+      username: Yup.string(),
+      domains: Yup.array(Yup.string()),
     });
 
     await schema.validate(req.body, { abortEarly: false });

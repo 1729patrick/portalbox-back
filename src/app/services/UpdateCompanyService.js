@@ -6,46 +6,54 @@ import File from '../schemas/File';
 
 class UpdateCompanyService {
   async run({ _id, company }) {
+    const companyToCheck = await Company.findById({ _id }).select('+password');
+
+    if (!companyToCheck.checkPassword(company.password)) {
+      throw new Error('Senha inválida 😱', 300);
+    }
+
     try {
-      const neighborhood = await Neighborhood.countDocuments({
-        _id: company.address.neighborhood,
-      });
+      const neighborhood = await Neighborhood.countDocuments(
+        company.address.neighborhood
+      );
 
       if (!neighborhood) {
         throw new Error();
       }
     } catch (err) {
-      throw new Error('Neighborhood not found');
+      throw new Error('Bairro não encontrado 🧐');
     }
 
     try {
-      const city = await City.countDocuments({ _id: company.address.city });
+      const city = await City.countDocuments(company.address.city);
 
       if (!city) {
         throw new Error();
       }
     } catch (err) {
-      throw new Error('City not found');
+      throw new Error('Cidade não encontrada 🧐');
     }
 
     try {
-      const banner = await File.countDocuments({ _id: company.banner });
+      const { _id } = company.banner;
+      const banner = await File.countDocuments({ _id });
 
       if (!banner) {
         throw new Error();
       }
     } catch (err) {
-      throw new Error('Banner not found');
+      throw new Error('Banner não encontrado 🧐');
     }
 
     try {
-      const logo = await File.countDocuments({ _id: company.logo });
+      const { _id } = company.logo;
+      const logo = await File.countDocuments({ _id });
 
       if (!logo) {
         throw new Error();
       }
     } catch (err) {
-      throw new Error('Logo not found');
+      throw new Error('Logo não encontrada 🧐');
     }
 
     return Company.findOneAndUpdate({ _id }, company, {
