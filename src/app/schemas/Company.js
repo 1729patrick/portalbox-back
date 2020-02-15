@@ -83,8 +83,10 @@ const CompanySchema = new mongoose.Schema(
         delete obj.password;
         delete obj.domains;
 
-        obj.logo = obj.logo ? obj.logo.url : null;
-        obj.banner = obj.banner ? obj.banner.url : null;
+        obj.logo = obj.logo ? { _id: obj.logo._id, url: obj.logo.url } : null;
+        obj.banner = obj.banner
+          ? { _id: obj.banner._id, url: obj.banner.url }
+          : null;
 
         if (obj.address) {
           obj.address.city = obj.address.city
