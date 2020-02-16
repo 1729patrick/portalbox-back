@@ -2,73 +2,35 @@ import Immobile from '../schemas/Immobile';
 
 import FindImmobilesService from '../services/FindImmobilesService';
 class ImmobileController {
-  async store(req, res) {
-    // return res.json(req.body);
+  async index(req, res) {
+    let { particulars } = req.query;
 
-    // for (let i = 0; i < 10000; i++) {
+    if (particulars) {
+      particulars = JSON.parse(req.query.particulars);
+    }
+
+    const { count, immobiles } = await FindImmobilesService.run({
+      ...req.query,
+      particulars,
+      particularLenght: 3,
+      imagesLengh: 1,
+      limit: Number(req.query.limit),
+      companyId: req.companyId,
+    });
+
+    return res.json({ count, immobiles });
+  }
+
+  async store(req, res) {
     const immobile = await Immobile.create({
       ...req.body,
       company: req.companyId,
     });
-    // }
-    const {
-      _id,
-      address,
-      type,
-      particulars,
-      map,
-      price,
-      owner,
-      images,
-      config,
-      rates,
-    } = immobile;
 
-    return res.json({
-      _id,
-      address,
-      type,
-      particulars,
-      map,
-      price,
-      owner,
-      images,
-      config,
-      rates,
-    });
-  }
+    // eslint-disable-next-line no-unused-vars
+    const { createdAt, updatedAt, __v, ...restImmobile } = immobile.toObject();
 
-  async index(req, res) {
-    const {
-      page,
-      sessions,
-      finality,
-      types,
-      neighborhoods,
-      limit,
-      priceMin,
-      priceMax,
-      particulars,
-    } = req.query;
-
-    const particularsFormatted = particulars ? JSON.parse(particulars) : null;
-
-    const { count, immobiles } = await FindImmobilesService.run({
-      page,
-      sessions,
-      companyId: req.companyId,
-      particularLenght: 3,
-      imagesLengh: 1,
-      finality,
-      types,
-      neighborhoods,
-      limit: Number(limit),
-      priceMin,
-      priceMax,
-      particulars: particularsFormatted,
-    });
-
-    return res.json({ count, immobiles });
+    return res.json(restImmobile);
   }
 }
 

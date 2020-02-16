@@ -31,11 +31,11 @@ class FindImmobilesService {
   }
 
   findImmobile({
+    _id,
     skip,
     limit,
     sessions,
     companyId,
-    _id,
     particularLenght,
     imagesLengh,
     finality,
@@ -45,18 +45,21 @@ class FindImmobilesService {
     priceMax = 999999999,
     particulars,
   }) {
-    const _idFind = _id ? { _id } : {};
-    const sessionsFind = sessions
-      ? { 'config.sessions': { $in: JSON.parse(sessions) } }
-      : {};
+    let idFind = {};
+    if (_id) idFind = _id;
 
-    const typeFind = types ? { type: { $in: JSON.parse(types) } } : {};
+    let sessionsFind = {};
+    if (sessions)
+      sessionsFind = { 'config.sessions': { $in: JSON.parse(sessions) } };
 
-    const neighborhoodFind = neighborhoods
-      ? {
-          'address.neighborhood': { $in: JSON.parse(neighborhoods) },
-        }
-      : {};
+    let typeFind = {};
+    if (types) typeFind = { type: { $in: JSON.parse(types) } };
+
+    let neighborhoodFind = {};
+    if (neighborhoods)
+      neighborhoodFind = {
+        'address.neighborhood': { $in: JSON.parse(neighborhoods) },
+      };
 
     const priceRentFind = {
       'price.rent': { $gte: Number(priceMin), $lte: Number(priceMax) },
@@ -66,27 +69,24 @@ class FindImmobilesService {
       'price.sale': { $gte: Number(priceMin), $lte: Number(priceMax) },
     };
 
-    const finalityFind =
-      finality === 'rent'
-        ? priceRentFind
-        : finality === 'sale'
-        ? priceSaleFind
-        : null;
+    let finalityFind = null;
+    if (finality === 'rent') finalityFind = priceRentFind;
+    else if (finality === 'sale') finalityFind = priceSaleFind;
 
     const noFinalityFind = { $or: [priceRentFind, priceSaleFind] };
 
-    const particularsFind = particulars
-      ? {
-          particulars: {
-            $all: particulars.map(({ title, value }) => ({
-              $elemMatch: {
-                title,
-                value: Number(value) ? { $gte: value } : value,
-              },
-            })),
-          },
-        }
-      : {};
+    let particularsFind = {};
+    if (particulars)
+      particularsFind = {
+        particulars: {
+          $all: particulars.map(({ title, value }) => ({
+            $elemMatch: {
+              title,
+              value: Number(value) ? { $gte: value } : value,
+            },
+          })),
+        },
+      };
 
     const find = Immobile.find(
       {
@@ -96,7 +96,7 @@ class FindImmobilesService {
         ...neighborhoodFind,
         ...(finalityFind || noFinalityFind),
         ...particularsFind,
-        ..._idFind,
+        ...idFind,
       },
       [
         'address',
