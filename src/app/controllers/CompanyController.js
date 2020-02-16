@@ -9,9 +9,8 @@ class CompanyController {
   }
 
   async update(req, res) {
-    // return res.json(req.body);
     const company = await UpdateCompanyService.run({
-      _id: req.companyId,
+      companyId: req.companyId,
       company: req.body,
     });
 

@@ -5,58 +5,48 @@ import City from '../schemas/City';
 import File from '../schemas/File';
 
 class UpdateCompanyService {
-  async run({ _id, company }) {
-    const companyToCheck = await Company.findById({ _id }).select('+password');
+  async run({ companyId, company }) {
+    const companyToCheck = await Company.findById(companyId).select(
+      '+password'
+    );
 
-    if (!companyToCheck.checkPassword(company.password)) {
-      throw new Error('Senha inválida 😱', 300);
+    if (!companyToCheck) {
+      throw new Error('Empresa não encontrada 🧐');
     }
 
-    try {
-      const neighborhood = await Neighborhood.countDocuments(
-        company.address.neighborhood
-      );
+    if (!companyToCheck.checkPassword(company.password)) {
+      throw new Error('Senha inválida 😱');
+    }
 
-      if (!neighborhood) {
-        throw new Error();
-      }
-    } catch (err) {
+    const checkNeighborhoodExist = await Neighborhood.countDocuments(
+      company.address.neighborhood
+    );
+
+    if (!checkNeighborhoodExist) {
       throw new Error('Bairro não encontrado 🧐');
     }
 
-    try {
-      const city = await City.countDocuments(company.address.city);
+    const checkCityExist = await City.countDocuments(company.address.city);
 
-      if (!city) {
-        throw new Error();
-      }
-    } catch (err) {
+    if (!checkCityExist) {
       throw new Error('Cidade não encontrada 🧐');
     }
 
-    try {
-      const { _id } = company.banner;
-      const banner = await File.countDocuments({ _id });
+    const checkBannerExist = await File.countDocuments({
+      _id: company.banner._id,
+    });
 
-      if (!banner) {
-        throw new Error();
-      }
-    } catch (err) {
+    if (!checkBannerExist) {
       throw new Error('Banner não encontrado 🧐');
     }
 
-    try {
-      const { _id } = company.logo;
-      const logo = await File.countDocuments({ _id });
+    const checkLogoExist = await File.countDocuments({ _id: company.logo._id });
 
-      if (!logo) {
-        throw new Error();
-      }
-    } catch (err) {
+    if (!checkLogoExist) {
       throw new Error('Logo não encontrada 🧐');
     }
 
-    return Company.findOneAndUpdate({ _id }, company, {
+    return Company.findOneAndUpdate({ _id: companyId }, company, {
       new: true,
       useFindAndModify: true,
     });
