@@ -11,6 +11,7 @@ import TypeController from './app/controllers/TypeController';
 import CityController from './app/controllers/CityController';
 
 import validateCityStore from './app/validators/CityStore';
+import validateCityUpdate from './app/validators/CityUpdate';
 import validateCompanyStore from './app/validators/CompanyStore';
 import validateCompanyUpdate from './app/validators/CompanyUpdate';
 import validateImmobileStore from './app/validators/ImmobileStore';
@@ -39,7 +40,7 @@ router.post('/types', validateTypeStore, TypeController.store);
 router.get('/public/types', TypeController.index);
 
 router.post('/cities', validateCityStore, CityController.store);
-router.put('/cities', validateCityStore, CityController.update);
+router.put('/cities', validateCityUpdate, CityController.update);
 router.get('/public/cities', CityController.index);
 
 router.post('/files', upload.array('files'), FileController.store);
