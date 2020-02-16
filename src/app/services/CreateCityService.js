@@ -6,7 +6,7 @@ class CreateCityService {
     const checkCityExist = await City.findOne({ name, company: companyId });
 
     if (checkCityExist) {
-      throw new Error('City alread exist');
+      throw new Error('Cidade já existe 🥺');
     }
 
     const city = await City.create({
@@ -15,7 +15,7 @@ class CreateCityService {
     });
 
     city.neighborhoods = await Promise.all(
-      neighborhoods.map(name => Neighborhood.create({ name }))
+      [...new Set(neighborhoods)].map(name => Neighborhood.create({ name }))
     );
 
     await city.save();

@@ -4,7 +4,7 @@ export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      neighborhoods: Yup.array(Yup.string().required()).required(),
+      // neighborhoods: Yup.array(Yup.string().required()).required(),
     });
 
     await schema.validate(req.body, { abortEarly: false });

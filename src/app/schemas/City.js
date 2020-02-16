@@ -8,11 +8,13 @@ const CitySchema = new mongoose.Schema(
     },
     neighborhoods: {
       required: true,
+      unique: true,
       type: [
         {
           type: mongoose.Schema.ObjectId,
           ref: 'Neighborhood',
           required: true,
+          unique: true,
         },
       ],
     },
@@ -23,4 +25,9 @@ const CitySchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model('City', CitySchema);
+CitySchema.index({ name: 1, company: 1 }, { unique: true });
+
+const City = mongoose.model('City', CitySchema);
+City.createIndexes();
+
+export default City;

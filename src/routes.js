@@ -39,6 +39,7 @@ router.post('/types', validateTypeStore, TypeController.store);
 router.get('/public/types', TypeController.index);
 
 router.post('/cities', validateCityStore, CityController.store);
+router.put('/cities', validateCityStore, CityController.update);
 router.get('/public/cities', CityController.index);
 
 router.post('/files', upload.array('files'), FileController.store);
