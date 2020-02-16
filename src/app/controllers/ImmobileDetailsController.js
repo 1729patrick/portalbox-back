@@ -2,16 +2,11 @@ import FindImmobilesService from '../services/FindImmobilesService';
 
 class ImmobileDetailsController {
   async index(req, res) {
-    const { _id } = req.params;
-
     const { immobiles } = await FindImmobilesService.run({
-      _id,
+      _id: req.params._id,
       companyId: req.companyId,
+      countDocuments: false,
     });
-
-    if (immobiles.length !== 1) {
-      return res.status(404).json({ error: 'Immobile not found' });
-    }
 
     return res.json(...immobiles);
   }

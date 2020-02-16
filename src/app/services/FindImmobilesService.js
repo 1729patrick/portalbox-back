@@ -1,33 +1,31 @@
 import Immobile from '../schemas/Immobile';
 
 class FindImmobilesService {
-  async run({ limit, ...restParams }) {
-    try {
-      const count = await this.findImmobile(restParams).countDocuments();
-
-      let skip = Math.random() * count;
-
-      skip = count - skip >= limit ? skip : 0;
-
-      const immobiles = await this.findImmobile({
-        skip,
-        limit,
-        ...restParams,
-      }).populate([
-        { path: 'address.city', model: 'City', select: 'name' },
-        {
-          path: 'address.neighborhood',
-          model: 'Neighborhood',
-          select: 'name',
-        },
-        { path: 'type', model: 'Type', select: 'name' },
-        { path: 'images.file', model: 'File', select: 'url path' },
-      ]);
-
-      return { immobiles, count };
-    } catch (e) {
-      throw new Error(e);
+  async run({ limit, countDocuments, ...restParams }) {
+    let count = 0;
+    if (countDocuments) {
+      count = await this.findImmobile(restParams).countDocuments();
     }
+
+    let skip = Math.random() * count;
+    skip = count - skip >= limit ? skip : 0;
+
+    const immobiles = await this.findImmobile({
+      skip,
+      limit,
+      ...restParams,
+    }).populate([
+      { path: 'address.city', model: 'City', select: 'name' },
+      {
+        path: 'address.neighborhood',
+        model: 'Neighborhood',
+        select: 'name',
+      },
+      { path: 'type', model: 'Type', select: 'name' },
+      { path: 'images.file', model: 'File', select: 'url path' },
+    ]);
+
+    return { immobiles, count };
   }
 
   findImmobile({
@@ -46,7 +44,7 @@ class FindImmobilesService {
     particulars,
   }) {
     let idFind = {};
-    if (_id) idFind = _id;
+    if (_id) idFind = { _id };
 
     let sessionsFind = {};
     if (sessions)

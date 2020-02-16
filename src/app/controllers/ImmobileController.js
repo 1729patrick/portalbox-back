@@ -12,6 +12,7 @@ class ImmobileController {
     const { count, immobiles } = await FindImmobilesService.run({
       ...req.query,
       particulars,
+      countDocuments: true,
       particularLenght: 3,
       imagesLengh: 1,
       limit: Number(req.query.limit),

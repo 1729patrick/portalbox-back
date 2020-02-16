@@ -5,35 +5,6 @@ import authConfig from '../../config/auth';
 import Company from '../schemas/Company';
 
 class SessionController {
-  async store(req, res) {
-    const { username, password } = req.body;
-
-    const companyToCheck = await Company.findOne({ username })
-      .populate('logo banner address.city address.neighborhood')
-      .select('+password -createdAt -updatedAt');
-
-    if (!companyToCheck) {
-      return res.status(403).json({ error: 'Company not found' });
-    }
-
-    if (!companyToCheck.checkPassword(password)) {
-      return res.status(403).json({ error: 'Password does not match' });
-    }
-
-    const company = companyToCheck.toJSON();
-
-    return res.json({
-      company,
-      token: jwt.sign(
-        { _id: company._id, audienceType: 'company' },
-        authConfig.secret,
-        {
-          expiresIn: authConfig.expiresInCompany,
-        }
-      ),
-    });
-  }
-
   async index(req, res) {
     const { origin } = req.headers;
 
@@ -60,6 +31,35 @@ class SessionController {
         authConfig.secret,
         {
           expiresIn: authConfig.expiresInVisitor,
+        }
+      ),
+    });
+  }
+
+  async store(req, res) {
+    const { username, password } = req.body;
+
+    const companyToCheck = await Company.findOne({ username })
+      .populate('logo banner address.city address.neighborhood')
+      .select('+password -createdAt -updatedAt');
+
+    if (!companyToCheck) {
+      return res.status(403).json({ error: 'Company not found' });
+    }
+
+    if (!companyToCheck.checkPassword(password)) {
+      return res.status(403).json({ error: 'Password does not match' });
+    }
+
+    const company = companyToCheck.toJSON();
+
+    return res.json({
+      company,
+      token: jwt.sign(
+        { _id: company._id, audienceType: 'company' },
+        authConfig.secret,
+        {
+          expiresIn: authConfig.expiresInCompany,
         }
       ),
     });
