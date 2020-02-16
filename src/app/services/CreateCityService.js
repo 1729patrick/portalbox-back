@@ -6,7 +6,7 @@ class CreateCityService {
     const checkCityExist = await City.findOne({ name, company: companyId });
 
     if (checkCityExist) {
-      throw new Error('Cidade já existe 🥺');
+      throw new Error('Cidade já existe 🤨');
     }
 
     const city = await City.create({
