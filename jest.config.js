@@ -1,6 +1,3 @@
-// For a detailed explanation regarding each configuration property, visit:
-// https://jestjs.io/docs/en/configuration.html
-
 module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -83,7 +80,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: null,
+  preset: '@shelf/jest-mongodb',
 
   // Run tests from one or more projects
   // projects: null,
@@ -133,12 +130,10 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/__tests__/**/*.test.js'],
+  testMatch: ['**/__tests__/**/*.spec.js'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: ['/node_modules/'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

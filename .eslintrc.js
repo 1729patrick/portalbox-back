@@ -20,4 +20,7 @@ module.exports = {
     camelcase: 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
   },
+  env: {
+    jest: true,
+  },
 };

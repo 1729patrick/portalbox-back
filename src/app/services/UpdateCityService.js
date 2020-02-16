@@ -2,8 +2,8 @@ import Neighborhood from '../schemas/Neighborhood';
 import City from '../schemas/City';
 
 class UpdateCityService {
-  async run({ _id, name, neighborhoods }) {
-    const city = await City.findByIdAndUpdate(_id, { name }).populate(
+  async run({ _id, name, neighborhoods, companyId }) {
+    const city = await City.findOne({ _id, company: companyId }).populate(
       'neighborhoods'
     );
 
@@ -15,32 +15,39 @@ class UpdateCityService {
       ...new Set(neighborhoods.map(({ name }) => name)),
     ];
 
-    city.neighborhoods = (
-      await Promise.all(
-        neighborhoodsUnique.map(name => {
-          const neighborhood = neighborhoods.find(
-            neighborhood => neighborhood.name === name
-          );
+    const createdNeighborhoods = await Promise.all(
+      neighborhoodsUnique.map(name => {
+        const { _id } = neighborhoods.find(
+          neighborhood => neighborhood.name === name
+        );
 
-          if (
-            city.neighborhoods.find(
-              ({ _id }) => String(_id) === neighborhood._id
-            )
-          )
-            return Neighborhood.findByIdAndUpdate(neighborhood._id, { name });
+        const checkNeighborhoodExistById = city.neighborhoods.find(
+          neighborhood => String(neighborhood._id) === _id
+        );
 
-          if (!city.neighborhoods.find(n => n.name === name))
-            return Neighborhood.create({ name });
-        })
-      )
-    ).filter(value => value);
+        if (checkNeighborhoodExistById)
+          return Neighborhood.findByIdAndUpdate(_id, { name });
 
+        const checkNeighborhoodExistByName = city.neighborhoods.find(
+          neighborhood => neighborhood.name === name
+        );
+
+        if (!checkNeighborhoodExistByName) return Neighborhood.create({ name });
+      })
+    );
+
+    const validNeighborhoods = createdNeighborhoods.filter(value => value);
+
+    city.name = name;
+    city.neighborhoods = validNeighborhoods;
     await city.save();
+
+    neighborhoods = city.neighborhoods.map(({ _id, name }) => ({ _id, name }));
 
     return {
       _id: city._id,
       name,
-      neighborhoods: city.neighborhoods.map(({ _id, name }) => ({ _id, name })),
+      neighborhoods,
     };
   }
 }
