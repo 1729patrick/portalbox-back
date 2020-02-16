@@ -5,3 +5,4 @@ tmp/uploads/*
 !*.gitkeep
 .env
 dist
+__tests__/coverage
