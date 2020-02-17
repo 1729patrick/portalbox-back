@@ -440,4 +440,42 @@ describe('city', () => {
       { name: 'Porto Leste' },
     ]);
   });
+
+  it('should throws error on not found city', async () => {
+    const updatedCity = () =>
+      UpdateCityService.run({
+        companyId,
+        _id: companyId,
+        name: 'Marselha',
+        neighborhoods: [{ name: '' }],
+      });
+
+    await expect(updatedCity()).rejects.toThrow('Cidade não encontrada 🧐');
+  });
+
+  it('should update on neighborhood name when _id is send', async () => {
+    const neighborhood = await Neighborhood.create({ name: 'Bairro Baixo' });
+
+    const createdCity = await City.create({
+      name: 'Lisboa',
+      neighborhoods: [neighborhood],
+      company: companyId,
+    });
+
+    console.log('id', neighborhood._id);
+    await UpdateCityService.run({
+      companyId,
+      _id: createdCity._id,
+      name: 'Marselha',
+      neighborhoods: [
+        { _id: neighborhood._id, name: 'Porto' },
+        { name: 'Porto Leste' },
+        { name: 'Mercado Comercial' },
+      ],
+    });
+
+    const neighborhoods = await Neighborhood.find();
+
+    expect(neighborhoods.length).toBe(3);
+  });
 });

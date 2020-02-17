@@ -22,13 +22,12 @@ class UpdateCityService {
     }
 
     const cityName = name.replace(/ /g, '');
-
     if (!cityName.length) {
       throw new Error('O campo cidade precisa ser preenchido 🧐');
     }
 
-    const neighborhoodsToCreate = neighborhoods.filter(({ name }) =>
-      name.replace(/ /g, '')
+    const neighborhoodsToCreate = neighborhoods.filter(
+      ({ name }) => name.replace(/ /g, '').length
     );
 
     if (!neighborhoodsToCreate.length) {
@@ -46,7 +45,7 @@ class UpdateCityService {
         );
 
         const checkNeighborhoodExistById = city.neighborhoods.find(
-          neighborhood => String(neighborhood._id) === _id
+          neighborhood => String(neighborhood._id) === String(_id)
         );
 
         if (checkNeighborhoodExistById)

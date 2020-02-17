@@ -18,8 +18,8 @@ class CreateCityService {
       throw new Error('O campo cidade precisa ser preenchido 🧐');
     }
 
-    const neighborhoodsToCreate = neighborhoods.filter(name =>
-      name.replace(/ /g, '')
+    const neighborhoodsToCreate = neighborhoods.filter(
+      name => name.replace(/ /g, '').length
     );
 
     if (!neighborhoodsToCreate.length) {
