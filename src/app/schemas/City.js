@@ -7,8 +7,6 @@ const CitySchema = new mongoose.Schema(
       required: true,
     },
     neighborhoods: {
-      required: true,
-      unique: true,
       type: [
         {
           type: mongoose.Schema.ObjectId,
@@ -17,6 +15,8 @@ const CitySchema = new mongoose.Schema(
           unique: true,
         },
       ],
+      validate: v => v.length,
+      unique: true,
     },
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true },
   },

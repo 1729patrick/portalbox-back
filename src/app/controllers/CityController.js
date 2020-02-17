@@ -1,15 +1,9 @@
-import City from '../schemas/City';
-
+import FindCityService from '../services/FindCityService';
 import CreateCityService from '../services/CreateCityService';
 import UpdateCityService from '../services/UpdateCityService';
 class CityController {
   async index(req, res) {
-    const cities = await City.find({ company: req.companyId }, 'name').populate(
-      {
-        path: 'neighborhoods',
-        select: 'name',
-      }
-    );
+    const cities = await FindCityService.run({ companyId: req.companyId });
 
     return res.json(cities);
   }
