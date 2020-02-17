@@ -2,7 +2,7 @@ import City from '../schemas/City';
 import Neighborhood from '../schemas/Neighborhood';
 
 class CreateCityService {
-  async run({ name, neighborhoods, companyId }) {
+  async run({ name = '', neighborhoods = [], companyId }) {
     const checkCityExist = await City.findOne({
       name,
       company: companyId,
@@ -12,21 +12,31 @@ class CreateCityService {
       throw new Error('Cidade já existe 🤨');
     }
 
-    if (!neighborhoods.length) {
+    const cityName = name.replace(/ /g, '');
+
+    if (!cityName.length) {
+      throw new Error('O campo cidade precisa ser preenchido 🧐');
+    }
+
+    const neighborhoodsToCreate = neighborhoods.filter(name =>
+      name.replace(/ /g, '')
+    );
+
+    if (!neighborhoodsToCreate.length) {
       throw new Error('Bairros não encontrados 🧐');
     }
 
-    neighborhoods = await Promise.all(
-      [...new Set(neighborhoods)].map(name => Neighborhood.create({ name }))
+    const createdNeighborhoods = await Promise.all(
+      [...new Set(neighborhoodsToCreate)].map(name =>
+        Neighborhood.create({ name })
+      )
     );
 
-    const city = await City.create({
+    return City.create({
       name,
-      neighborhoods,
+      neighborhoods: createdNeighborhoods,
       company: companyId,
     });
-
-    return city;
   }
 }
 

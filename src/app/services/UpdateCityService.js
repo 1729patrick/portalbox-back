@@ -2,7 +2,7 @@ import Neighborhood from '../schemas/Neighborhood';
 import City from '../schemas/City';
 
 class UpdateCityService {
-  async run({ _id, name, neighborhoods, companyId }) {
+  async run({ _id, name = '', neighborhoods = [], companyId }) {
     const city = await City.findOne({ _id, company: companyId }).populate(
       'neighborhoods'
     );
@@ -11,8 +11,32 @@ class UpdateCityService {
       throw new Error('Cidade não encontrada 🧐');
     }
 
+    const checkCityExist = await City.findOne({
+      name,
+      _id: { $ne: city._id },
+      company: companyId,
+    });
+
+    if (checkCityExist) {
+      throw new Error('Cidade já existe 🤨');
+    }
+
+    const cityName = name.replace(/ /g, '');
+
+    if (!cityName.length) {
+      throw new Error('O campo cidade precisa ser preenchido 🧐');
+    }
+
+    const neighborhoodsToCreate = neighborhoods.filter(({ name }) =>
+      name.replace(/ /g, '')
+    );
+
+    if (!neighborhoodsToCreate.length) {
+      throw new Error('Bairros não encontrados 🧐');
+    }
+
     const neighborhoodsUnique = [
-      ...new Set(neighborhoods.map(({ name }) => name)),
+      ...new Set(neighborhoodsToCreate.map(({ name }) => name)),
     ];
 
     const createdNeighborhoods = await Promise.all(
@@ -37,18 +61,11 @@ class UpdateCityService {
     );
 
     const validNeighborhoods = createdNeighborhoods.filter(value => value);
-
-    city.name = name;
-    city.neighborhoods = validNeighborhoods;
-    await city.save();
-
-    neighborhoods = city.neighborhoods.map(({ _id, name }) => ({ _id, name }));
-
-    return {
-      _id: city._id,
-      name,
-      neighborhoods,
-    };
+    return City.findOneAndUpdate(
+      { _id, company: companyId },
+      { name, neighborhoods: validNeighborhoods },
+      { new: true }
+    ).populate('neighborhoods');
   }
 }
 
